@@ -60,6 +60,10 @@ FOUNDATION_EXTERN NSString * const PKRevealControllerQuickSwipeToggleVelocityKey
 FOUNDATION_EXTERN NSString * const PKRevealControllerDisablesFrontViewInteractionKey;
 FOUNDATION_EXTERN NSString * const PKRevealControllerRecognizesPanningOnFrontViewKey;
 FOUNDATION_EXTERN NSString * const PKRevealControllerRecognizesResetTapOnFrontViewKey;
+FOUNDATION_EXTERN NSString * const PKRevealControllerOpensLeftViewControllerOnPortraitKey;
+FOUNDATION_EXTERN NSString * const PKRevealControllerOpensLeftViewControllerOnLandscapeKey;
+FOUNDATION_EXTERN NSString * const PKRevealControllerResizesFrontViewControllerOnPortraitKey;
+FOUNDATION_EXTERN NSString * const PKRevealControllerResizesFrontViewControllerOnLandscapeKey;
 
 @protocol PKRevealing;
 

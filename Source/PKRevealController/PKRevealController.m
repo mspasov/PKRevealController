@@ -41,6 +41,10 @@
 #define DEFAULT_RECOGNIZES_PAN_ON_FRONT_VIEW_VALUE YES
 #define DEFAULT_RECOGNIZES_RESET_TAP_ON_FRONT_VIEW_VALUE YES
 #define DEFAULT_RECOGNIZES_RESET_TAP_ON_FRONT_VIEW_IN_PRESENTATION_MODE_VALUE YES
+#define DEFAULT_OPENS_LEFT_VIEW_CONTROLLER_ON_LANDSCAPE NO
+#define DEFAULT_OPENS_LEFT_VIEW_CONTROLLER_ON_PORTRAIT NO
+#define DEFAULT_RESIZE_FRONT_VIEW_CONTROLLER_ON_LANDSCAPE NO
+#define DEFAULT_RESIZE_FRONT_VIEW_CONTROLLER_ON_PORTRAIT NO
 
 NSString * const PKRevealControllerAnimationDurationKey = @"animationDuration";
 NSString * const PKRevealControllerAnimationCurveKey = @"animationCurve";
@@ -51,6 +55,10 @@ NSString * const PKRevealControllerDisablesFrontViewInteractionKey = @"disablesF
 NSString * const PKRevealControllerRecognizesPanningOnFrontViewKey = @"recognizesPanningOnFrontView";
 NSString * const PKRevealControllerRecognizesResetTapOnFrontViewKey = @"recognizesResetTapOnFrontView";
 NSString * const PKRevealControllerRecognizesResetTapOnFrontViewInPresentationModeKey = @"recognizesResetTapOnFrontViewInPresentationMode";
+NSString * const PKRevealControllerOpensLeftViewControllerOnPortraitKey = @"PKRevealControllerOpensLeftViewControllerOnPortraitKey";
+NSString * const PKRevealControllerOpensLeftViewControllerOnLandscapeKey = @"PKRevealControllerOpensLeftViewControllerOnLandscapeKey";
+NSString * const PKRevealControllerResizesFrontViewControllerOnPortraitKey = @"PKRevealControllerResizesFrontViewControllerOnPortraitKey";
+NSString * const PKRevealControllerResizesFrontViewControllerOnLandscapeKey = @"PKRevealControllerResizesFrontViewControllerOnLandscapeKey";
 
 static NSString *kPKRevealControllerFrontViewTranslationAnimationKey = @"frontViewTranslation";
 
