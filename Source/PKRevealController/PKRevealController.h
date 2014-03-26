@@ -51,6 +51,7 @@ typedef enum : NSUInteger
 } PKRevealControllerType;
 
 typedef void(^PKDefaultCompletionHandler)(BOOL finished);
+typedef void(^PKDefaultRotationHandler)(PKRevealController *revealController, UIInterfaceOrientation interfaceOrientation, NSTimeInterval duration);
 
 FOUNDATION_EXTERN NSString * const PKRevealControllerAnimationDurationKey;
 FOUNDATION_EXTERN NSString * const PKRevealControllerAnimationCurveKey;
@@ -119,6 +120,9 @@ FOUNDATION_EXTERN NSString * const PKRevealControllerRecognizesResetTapOnFrontVi
 
 /// Whether to allow snap-back-on-tap if a rear view is shown in presentation mode and the user taps on the front view.
 @property (nonatomic, assign, readwrite) BOOL recognizesResetTapOnFrontViewInPresentationMode;
+
+/// Block to execute on rotation
+@property (nonatomic, copy, readwrite) PKDefaultRotationHandler onRotationBlock;
 
 /// The controller's delegate, conforming to the PKRevealing protocol.
 @property (nonatomic, weak, readwrite) id<PKRevealing> delegate;

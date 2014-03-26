@@ -1422,6 +1422,9 @@ typedef struct
                                          duration:(NSTimeInterval)duration
 {
     [self.frontView updateShadowWithAnimationDuration:duration];
+    if (self.onRotationBlock) {
+        self.onRotationBlock(self, toInterfaceOrientation, duration);
+    }
 }
 
 @end
