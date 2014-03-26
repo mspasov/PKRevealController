@@ -124,6 +124,18 @@ FOUNDATION_EXTERN NSString * const PKRevealControllerResizesFrontViewControllerO
 /// Whether to allow snap-back-on-tap if a rear view is shown in presentation mode and the user taps on the front view.
 @property (nonatomic, assign, readwrite) BOOL recognizesResetTapOnFrontViewInPresentationMode;
 
+/// Wheter to open force opening of leftViewController upon rotation to portrait
+@property (nonatomic, assign, readwrite) BOOL opensLeftViewControllerOnPortrait;
+
+/// Wether to open leftViewController upon rotation to landscape
+@property (nonatomic, assign, readwrite) BOOL opensLeftViewControllerOnLandscape;
+
+/// When showing leftViewController, keep frontViewController on screen by resizing it
+@property (nonatomic, assign, readwrite) BOOL resizesFrontViewControllerOnPortrait;
+
+/// When showing leftViewController, keep frontViewController on screen by resizing it
+@property (nonatomic, assign, readwrite) BOOL resizesFrontViewControllerOnLandscape;
+
 /// The controller's delegate, conforming to the PKRevealing protocol.
 @property (nonatomic, weak, readwrite) id<PKRevealing> delegate;
 

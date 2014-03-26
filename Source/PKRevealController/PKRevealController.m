@@ -560,6 +560,10 @@ typedef struct
     _leftViewWidthRange = DEFAULT_LEFT_VIEW_WIDTH_RANGE;
     _rightViewWidthRange = DEFAULT_RIGHT_VIEW_WIDTH_RANGE;
     _recognizesResetTapOnFrontViewInPresentationMode = DEFAULT_RECOGNIZES_RESET_TAP_ON_FRONT_VIEW_IN_PRESENTATION_MODE_VALUE;
+    _opensLeftViewControllerOnLandscape = DEFAULT_OPENS_LEFT_VIEW_CONTROLLER_ON_LANDSCAPE;
+    _opensLeftViewControllerOnPortrait = DEFAULT_OPENS_LEFT_VIEW_CONTROLLER_ON_PORTRAIT;
+    _resizesFrontViewControllerOnLandscape = DEFAULT_RESIZE_FRONT_VIEW_CONTROLLER_ON_LANDSCAPE;
+    _resizesFrontViewControllerOnPortrait = DEFAULT_RESIZE_FRONT_VIEW_CONTROLLER_ON_PORTRAIT;
 }
 
 - (void)setupContainerViews
@@ -1430,6 +1434,22 @@ typedef struct
                                          duration:(NSTimeInterval)duration
 {
     [self.frontView updateShadowWithAnimationDuration:duration];
+
+
+
+    if (UIInterfaceOrientationIsPortrait(toInterfaceOrientation)) {
+        if (self.opensLeftViewControllerOnPortrait) {
+            [self showViewController:self.leftViewController];
+        } else if (self.opensLeftViewControllerOnLandscape) {
+            [self showViewController:self.frontViewController];
+        }
+    } else {
+        if (self.opensLeftViewControllerOnLandscape) {
+            [self showViewController:self.leftViewController];
+        } else if (self.opensLeftViewControllerOnPortrait) {
+            [self showViewController:self.frontViewController];
+        }
+    }
 }
 
 @end
