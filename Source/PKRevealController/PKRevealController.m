@@ -96,6 +96,9 @@ typedef struct
 
 @property (nonatomic, strong, readwrite) PKLayerAnimator *animator;
 
+@property (nonatomic, assign, readwrite) UIInterfaceOrientation rotatingToInterfaceOrientation;
+@property (nonatomic, assign, readwrite) BOOL isRotating;
+
 #pragma mark - Methods
 - (instancetype)initWithFrontViewController:(UIViewController *)frontViewController
                          leftViewController:(UIViewController *)leftViewController
@@ -292,7 +295,13 @@ typedef struct
         toState = PKRevealControllerShowsRightViewController;
         toPoint = [self centerPointForState:toState];
     }
-    
+
+    CGRect frame = self.frontView.frame;
+    frame.size.width = [self frontViewWidth];
+    self.frontView.frame = frame;
+
+    [self showLeftView];
+
     if (animated)
     {
         [self animateToState:toState completion:completion];
@@ -1299,7 +1308,10 @@ typedef struct
             
         case PKRevealControllerShowsLeftViewController:
         {
-            center.x = CGRectGetMidX(self.view.bounds) + [self leftViewMinWidth];
+            if (self.resizesFrontViewControllerOnLandscape)
+                center.x = CGRectGetMidX(self.view.bounds) + [self leftViewMinWidth]/2;
+            else
+                center.x = CGRectGetMidX(self.view.bounds) + [self leftViewMinWidth];
         }
             break;
             
@@ -1322,6 +1334,24 @@ typedef struct
     }
     
     return center;
+}
+
+- (CGFloat)frontViewWidth
+{
+    if (UIInterfaceOrientationIsLandscape([self orientation])) {
+        if (self.resizesFrontViewControllerOnLandscape) {
+            return self.view.bounds.size.width - [self leftViewMinWidth];
+
+        } else {
+            return self.view.bounds.size.width;
+        }
+    } else {
+        if (self.resizesFrontViewControllerOnPortrait) {
+            return self.view.bounds.size.width - [self leftViewMinWidth];
+        } else {
+            return self.view.bounds.size.width;
+        }
+    }
 }
 
 - (CGFloat)leftViewMinWidth
@@ -1435,21 +1465,33 @@ typedef struct
 {
     [self.frontView updateShadowWithAnimationDuration:duration];
 
-
+    self.isRotating = YES;
+    self.rotatingToInterfaceOrientation = toInterfaceOrientation;
 
     if (UIInterfaceOrientationIsPortrait(toInterfaceOrientation)) {
         if (self.opensLeftViewControllerOnPortrait) {
-            [self showViewController:self.leftViewController];
+            [self showViewController:self.leftViewController animated:NO completion:nil];
+            [self showLeftView];
         } else if (self.opensLeftViewControllerOnLandscape) {
-            [self showViewController:self.frontViewController];
+            [self showViewController:self.frontViewController animated:NO completion:nil];
         }
     } else {
         if (self.opensLeftViewControllerOnLandscape) {
-            [self showViewController:self.leftViewController];
+            [self showViewController:self.leftViewController animated:NO completion:nil];
+            [self showLeftView];
         } else if (self.opensLeftViewControllerOnPortrait) {
-            [self showViewController:self.frontViewController];
+            [self showViewController:self.frontViewController animated:NO completion:nil];
         }
     }
+
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    self.isRotating = NO;
+}
+
+- (UIInterfaceOrientation)orientation {
+    return self.isRotating ? self.rotatingToInterfaceOrientation : [[UIApplication sharedApplication] statusBarOrientation];
 }
 
 @end
