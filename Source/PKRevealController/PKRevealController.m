@@ -1308,7 +1308,7 @@ typedef struct
             
         case PKRevealControllerShowsLeftViewController:
         {
-            if (self.resizesFrontViewControllerOnLandscape)
+            if (self.resizesFrontViewControllerOnLandscape && UIInterfaceOrientationIsLandscape([self orientation]))
                 center.x = CGRectGetMidX(self.view.bounds) + [self leftViewMinWidth]/2;
             else
                 center.x = CGRectGetMidX(self.view.bounds) + [self leftViewMinWidth];
