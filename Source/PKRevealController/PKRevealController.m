@@ -41,6 +41,10 @@
 #define DEFAULT_RECOGNIZES_PAN_ON_FRONT_VIEW_VALUE YES
 #define DEFAULT_RECOGNIZES_RESET_TAP_ON_FRONT_VIEW_VALUE YES
 #define DEFAULT_RECOGNIZES_RESET_TAP_ON_FRONT_VIEW_IN_PRESENTATION_MODE_VALUE YES
+#define DEFAULT_OPENS_LEFT_VIEW_CONTROLLER_ON_LANDSCAPE NO
+#define DEFAULT_OPENS_LEFT_VIEW_CONTROLLER_ON_PORTRAIT NO
+#define DEFAULT_RESIZE_FRONT_VIEW_CONTROLLER_ON_LANDSCAPE NO
+#define DEFAULT_RESIZE_FRONT_VIEW_CONTROLLER_ON_PORTRAIT NO
 
 NSString * const PKRevealControllerAnimationDurationKey = @"animationDuration";
 NSString * const PKRevealControllerAnimationCurveKey = @"animationCurve";
@@ -51,6 +55,10 @@ NSString * const PKRevealControllerDisablesFrontViewInteractionKey = @"disablesF
 NSString * const PKRevealControllerRecognizesPanningOnFrontViewKey = @"recognizesPanningOnFrontView";
 NSString * const PKRevealControllerRecognizesResetTapOnFrontViewKey = @"recognizesResetTapOnFrontView";
 NSString * const PKRevealControllerRecognizesResetTapOnFrontViewInPresentationModeKey = @"recognizesResetTapOnFrontViewInPresentationMode";
+NSString * const PKRevealControllerOpensLeftViewControllerOnPortraitKey = @"PKRevealControllerOpensLeftViewControllerOnPortraitKey";
+NSString * const PKRevealControllerOpensLeftViewControllerOnLandscapeKey = @"PKRevealControllerOpensLeftViewControllerOnLandscapeKey";
+NSString * const PKRevealControllerResizesFrontViewControllerOnPortraitKey = @"PKRevealControllerResizesFrontViewControllerOnPortraitKey";
+NSString * const PKRevealControllerResizesFrontViewControllerOnLandscapeKey = @"PKRevealControllerResizesFrontViewControllerOnLandscapeKey";
 
 static NSString *kPKRevealControllerFrontViewTranslationAnimationKey = @"frontViewTranslation";
 
@@ -87,6 +95,9 @@ typedef struct
 @property (nonatomic, assign, readwrite) NSRange rightViewWidthRange;
 
 @property (nonatomic, strong, readwrite) PKLayerAnimator *animator;
+
+@property (nonatomic, assign, readwrite) UIInterfaceOrientation rotatingToInterfaceOrientation;
+@property (nonatomic, assign, readwrite) BOOL isRotating;
 
 #pragma mark - Methods
 - (instancetype)initWithFrontViewController:(UIViewController *)frontViewController
@@ -284,7 +295,13 @@ typedef struct
         toState = PKRevealControllerShowsRightViewController;
         toPoint = [self centerPointForState:toState];
     }
-    
+
+    CGRect frame = self.frontView.frame;
+    frame.size.width = [self frontViewWidth];
+    self.frontView.frame = frame;
+
+    [self showLeftView];
+
     if (animated)
     {
         [self animateToState:toState completion:completion];
@@ -552,6 +569,10 @@ typedef struct
     _leftViewWidthRange = DEFAULT_LEFT_VIEW_WIDTH_RANGE;
     _rightViewWidthRange = DEFAULT_RIGHT_VIEW_WIDTH_RANGE;
     _recognizesResetTapOnFrontViewInPresentationMode = DEFAULT_RECOGNIZES_RESET_TAP_ON_FRONT_VIEW_IN_PRESENTATION_MODE_VALUE;
+    _opensLeftViewControllerOnLandscape = DEFAULT_OPENS_LEFT_VIEW_CONTROLLER_ON_LANDSCAPE;
+    _opensLeftViewControllerOnPortrait = DEFAULT_OPENS_LEFT_VIEW_CONTROLLER_ON_PORTRAIT;
+    _resizesFrontViewControllerOnLandscape = DEFAULT_RESIZE_FRONT_VIEW_CONTROLLER_ON_LANDSCAPE;
+    _resizesFrontViewControllerOnPortrait = DEFAULT_RESIZE_FRONT_VIEW_CONTROLLER_ON_PORTRAIT;
 }
 
 - (void)setupContainerViews
@@ -1287,7 +1308,10 @@ typedef struct
             
         case PKRevealControllerShowsLeftViewController:
         {
-            center.x = CGRectGetMidX(self.view.bounds) + [self leftViewMinWidth];
+            if (self.resizesFrontViewControllerOnLandscape && UIInterfaceOrientationIsLandscape([self orientation]))
+                center.x = CGRectGetMidX(self.view.bounds) + [self leftViewMinWidth]/2;
+            else
+                center.x = CGRectGetMidX(self.view.bounds) + [self leftViewMinWidth];
         }
             break;
             
@@ -1310,6 +1334,24 @@ typedef struct
     }
     
     return center;
+}
+
+- (CGFloat)frontViewWidth
+{
+    if (UIInterfaceOrientationIsLandscape([self orientation])) {
+        if (self.resizesFrontViewControllerOnLandscape) {
+            return self.view.bounds.size.width - [self leftViewMinWidth];
+
+        } else {
+            return self.view.bounds.size.width;
+        }
+    } else {
+        if (self.resizesFrontViewControllerOnPortrait) {
+            return self.view.bounds.size.width - [self leftViewMinWidth];
+        } else {
+            return self.view.bounds.size.width;
+        }
+    }
 }
 
 - (CGFloat)leftViewMinWidth
@@ -1422,9 +1464,38 @@ typedef struct
                                          duration:(NSTimeInterval)duration
 {
     [self.frontView updateShadowWithAnimationDuration:duration];
+
     if (self.onRotationBlock) {
         self.onRotationBlock(self, toInterfaceOrientation, duration);
     }
+
+    self.isRotating = YES;
+    self.rotatingToInterfaceOrientation = toInterfaceOrientation;
+
+    if (UIInterfaceOrientationIsPortrait(toInterfaceOrientation)) {
+        if (self.opensLeftViewControllerOnPortrait) {
+            [self showViewController:self.leftViewController animated:NO completion:nil];
+            [self showLeftView];
+        } else if (self.opensLeftViewControllerOnLandscape) {
+            [self showViewController:self.frontViewController animated:NO completion:nil];
+        }
+    } else {
+        if (self.opensLeftViewControllerOnLandscape) {
+            [self showViewController:self.leftViewController animated:NO completion:nil];
+            [self showLeftView];
+        } else if (self.opensLeftViewControllerOnPortrait) {
+            [self showViewController:self.frontViewController animated:NO completion:nil];
+        }
+    }
+
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    self.isRotating = NO;
+}
+
+- (UIInterfaceOrientation)orientation {
+    return self.isRotating ? self.rotatingToInterfaceOrientation : [[UIApplication sharedApplication] statusBarOrientation];
 }
 
 @end

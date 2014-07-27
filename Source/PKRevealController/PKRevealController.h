@@ -61,6 +61,10 @@ FOUNDATION_EXTERN NSString * const PKRevealControllerQuickSwipeToggleVelocityKey
 FOUNDATION_EXTERN NSString * const PKRevealControllerDisablesFrontViewInteractionKey;
 FOUNDATION_EXTERN NSString * const PKRevealControllerRecognizesPanningOnFrontViewKey;
 FOUNDATION_EXTERN NSString * const PKRevealControllerRecognizesResetTapOnFrontViewKey;
+FOUNDATION_EXTERN NSString * const PKRevealControllerOpensLeftViewControllerOnPortraitKey;
+FOUNDATION_EXTERN NSString * const PKRevealControllerOpensLeftViewControllerOnLandscapeKey;
+FOUNDATION_EXTERN NSString * const PKRevealControllerResizesFrontViewControllerOnPortraitKey;
+FOUNDATION_EXTERN NSString * const PKRevealControllerResizesFrontViewControllerOnLandscapeKey;
 
 @protocol PKRevealing;
 
@@ -123,6 +127,18 @@ FOUNDATION_EXTERN NSString * const PKRevealControllerRecognizesResetTapOnFrontVi
 
 /// Block to execute on rotation
 @property (nonatomic, copy, readwrite) PKDefaultRotationHandler onRotationBlock;
+
+/// Wheter to open force opening of leftViewController upon rotation to portrait
+@property (nonatomic, assign, readwrite) BOOL opensLeftViewControllerOnPortrait;
+
+/// Wether to open leftViewController upon rotation to landscape
+@property (nonatomic, assign, readwrite) BOOL opensLeftViewControllerOnLandscape;
+
+/// When showing leftViewController, keep frontViewController on screen by resizing it
+@property (nonatomic, assign, readwrite) BOOL resizesFrontViewControllerOnPortrait;
+
+/// When showing leftViewController, keep frontViewController on screen by resizing it
+@property (nonatomic, assign, readwrite) BOOL resizesFrontViewControllerOnLandscape;
 
 /// The controller's delegate, conforming to the PKRevealing protocol.
 @property (nonatomic, weak, readwrite) id<PKRevealing> delegate;
